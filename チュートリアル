@@ -1,0 +1,101 @@
+//アクセストークンを取得・更新する
+curl -X POST "https://platform-api.bocco.me/oauth/token/refresh" \
+     -H "Content-Type: application/json"  \
+     -d '{"refresh_token": "926fe48e-983f-4fbe-9b48-bb14a987472a"}'
+
+//アクセスキー
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjZGRmNGQxYi1kNjZjLTQ4ZGUtYThjNC03ODkxNzJmOGViYmEiLCJpc3MiOiJwbGF0Zm9ybS1hcGkiLCJleHAiOjE3NzYyNDU4MDYsInBsYW4iOiJmcmVlIiwiaWF0IjoxNzc2MjQyMjA2fQ.V3HtNxcbiBn9T_DMaCCYjadvw3BBKoLQD5cZGqu0NR8qGXLmz6oUkNZuSUaHlrMeNxemkNFy5jUenRDWPcTipA
+
+//部屋一覧の取得
+curl "https://platform-api.bocco.me/v1/rooms" \
+     -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+//出力
+{"listing":{"offset":0,"limit":50,"total":2},"rooms":[{"uuid":"91f1054d-5b1c-49cb-86e9-01c6be78dc1a","name":"大学","room_type":"normal","room_members":[{"uuid":"cddf4d1b-d66c-48de-a8c4-789172f8ebba","user_type":"member","nickname":"ゆうま","profile_image":""},{"uuid":"91f1054d-5b1c-49cb-86e9-01c6be78dc1a","user_type":"emo","nickname":"","profile_image":""}],"online":true},{"uuid":"1b124262-2fc1-4017-8e1e-56296a504a17","name":"エモちゃんの部屋","room_type":"normal","room_members":[{"uuid":"cddf4d1b-d66c-48de-a8c4-789172f8ebba","user_type":"member","nickname":"ゆうま","profile_image":""},{"uuid":"1b124262-2fc1-4017-8e1e-56296a504a17","user_type":"emo","nickname":"","profile_image":""}],"online":false}]}
+
+//メッセージ取得API
+curl "https://platform-api.bocco.me/v1/rooms/91f1054d-5b1c-49cb-86e9-01c6be78dc1a/messages" \
+     -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+//出力
+{"messages":[{"sequence":20260415051253040,"unique_id":"b803a63f-05a5-4344-8e81-5d171905bd67","user":{"uuid":"cddf4d1b-d66c-48de-a8c4-789172f8ebba","user_type":"member","nickname":"ゆうま","profile_image":""},"message":{"ja":"あ"},"media":"text","audio_url":"","image_url":"","lang":"ja"},{"sequence":20260413062907344,"unique_id":"3267b40f-3d67-4e2d-af7d-de4d26cd3ce5","user":{"uuid":"cddf4d1b-d66c-48de-a8c4-789172f8ebba","user_type":"member","nickname":"ゆうま","profile_image":""},"message":{"ja":"API経由での初めての投稿です！"},"media":"text","audio_url":"","image_url":"","lang":"ja"},{"sequence":20260318074521564,"unique_id":"34e26088-16ff-4d9b-a36e-99398b89ea4f","user":{"uuid":"91f1054d-5b1c-49cb-86e9-01c6be78dc1a","user_type":"emo","nickname":"","profile_image":""},"message":{"ja":"アンパンとアンパンの違い"},"media":"audio","audio_url":"https://platform-api.bocco.me/ext/1/rooms/91f1054d-5b1c-49cb-86e9-01c6be78dc1a/feeds/34e26088-16ff-4d9b-a36e-99398b89ea4f/audio","image_url":"","lang":"ja"},{"sequence":20260302070810092,"unique_id":"259f114c-9ac3-467c-a825-3b3aa6dd482f","user":{"uuid":"cddf4d1b-d66c-48de-a8c4-789172f8ebba","user_type":"member","nickname":"ゆうま","profile_image":""},"message":{"ja":"はろー"},"media":"text","audio_url":"","image_url":"","lang":"ja"},{"sequence":20260302070612580,"unique_id":"ba140ab2-f7ea-4f9e-83c7-35cc23a404d6","user":{"uuid":"91f1054d-5b1c-49cb-86e9-01c6be78dc1a","user_type":"emo","nickname":"","profile_image":""},"message":{"ja":"ゆうまが入室しました。"},"media":"text","audio_url":"","image_url":"","lang":"ja"}]}
+
+//メッセージ送信API
+curl -X POST "https://platform-api.bocco.me/v1/rooms/91f1054d-5b1c-49cb-86e9-01c6be78dc1a/messages/text" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d @- <<EOS
+  {  
+    "text": "Hallow"
+  }
+EOS
+//出力
+{"sequence":20260415052022536,"unique_id":"1d3e7c0f-abd3-447c-803d-6f548a558230","user":{"uuid":"cddf4d1b-d66c-48de-a8c4-789172f8ebba","user_type":"member","nickname":"ゆうま","profile_image":""},"message":{"ja":"Hallow"},"media":"text","audio_url":"","image_url":"","lang":"ja"}
+
+//モーション
+curl -X POST "https://platform-api.bocco.me/v1/rooms/91f1054d-5b1c-49cb-86e9-01c6be78dc1a/motions" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d @emo-motion.json
+
+//音声メッセージの送信
+curl -X POST 'https://platform-api.bocco.me/v1/rooms/91f1054d-5b1c-49cb-86e9-01c6be78dc1a/messages/audio" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -F "audio=@ファイル名"
+
+//画像の送信
+curl -X POST "https://platform-api.bocco.me/v1/rooms/91f1054d-5b1c-49cb-86e9-01c6be78dc1a/messages/image" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -F "image=@ファイル名"
+
+//スタンプの取得
+curl "https://platform-api.bocco.me/v1/stamp" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" 
+//出力
+{"listing":{"offset":0,"limit":50,"total":20},"stamps":[{"uuid":"6188eaef-0505-4e60-b29a-2a1e7307f556","name":"w1ohayo","summary":"おはよう","image":"https://platform-api.bocco.me/ext/assets/stamps/image/dcae4539-6796-43d5-9dd3-02b16d3711e3.png"},{"uuid":"1e325c45-98e0-4d1c-993e-56f6151f3fc7","name":"w2ittekimasu","summary":"いってきます","image":"https://platform-api.bocco.me/ext/assets/stamps/image/963cb20f-5b14-4289-a0ae-08841f4de94b.png"},{"uuid":"39b209dd-2c72-4a23-87bf-163ac819e762","name":"w3tadaima","summary":"ただいま","image":"https://platform-api.bocco.me/ext/assets/stamps/image/5718d9c8-8087-47ea-b7cc-db68f5fa1231.png"},{"uuid":"c585bb4d-8f4f-4b2d-b130-37bf82a4c70c","name":"w4oyasumi","summary":"おやすみ","image":"https://platform-api.bocco.me/ext/assets/stamps/image/ae4dff0b-a2c4-4473-b39b-6ab42c7645dd.png"},{"uuid":"bec13b5b-884a-4430-aea1-06bed16438c9","name":"w5arigato","summary":"ありがとう","image":"https://platform-api.bocco.me/ext/assets/stamps/image/60cec326-b384-4adc-9b5a-d258d9a4028c.png"},{"uuid":"607d2e05-4b82-4bc9-929c-75284c3e1934","name":"w6yoroshiku","summary":"よろしく","image":"https://platform-api.bocco.me/ext/assets/stamps/image/25253618-116a-4288-a7ed-164e28412482.png"},{"uuid":"efa697ac-ed6c-4f18-960c-3abf16a67642","name":"w7ok","summary":"ok","image":"https://platform-api.bocco.me/ext/assets/stamps/image/53ce7923-3d2c-419d-9774-8e9f57ee12c9.png"},{"uuid":"01243b96-0d8c-4686-adef-ffe2e6fe5560","name":"w8ng","summary":"ng","image":"https://platform-api.bocco.me/ext/assets/stamps/image/afeafde5-c57b-42ef-8239-3e86a7f9ea40.png"},{"uuid":"f175953f-d29d-406a-bb19-43f3eb237c5e","name":"w9ganbare","summary":"がんばれ","image":"https://platform-api.bocco.me/ext/assets/stamps/image/e25e82ff-ef45-4566-b886-fcd508796848.png"},{"uuid":"571d9a6a-aab9-4f56-a866-9c8ab1a0124f","name":"w10question","summary":"疑問","image":"https://platform-api.bocco.me/ext/assets/stamps/image/7c979adc-c866-412b-b9bd-0ca30c314369.png"},{"uuid":"3e95bd19-ef46-4512-ad6d-70b5b0a9b065","name":"w11happy","summary":"幸せ","image":"https://platform-api.bocco.me/ext/assets/stamps/image/077e8b80-9aa1-4b5d-b529-043db4c2ec57.png"},{"uuid":"6c9841a0-808f-4c68-9d4c-9b9a2078b996","name":"w12cold","summary":"寒い","image":"https://platform-api.bocco.me/ext/assets/stamps/image/47e13ea5-bc83-42e9-9408-70bd527754a5.png"},{"uuid":"14ac8b97-ae18-4bf5-9df8-77a23187f2cb","name":"w13heat","summary":"暑い","image":"https://platform-api.bocco.me/ext/assets/stamps/image/ad159f26-023d-484c-bb6d-d3e6333c7480.png"},{"uuid":"f29e69dc-2389-4336-99c9-ffad89dbea72","name":"w14hot","summary":"ポカポカ","image":"https://platform-api.bocco.me/ext/assets/stamps/image/f4bbcbca-992f-43bc-a06d-7934e087e7d6.png"},{"uuid":"aa3a19d7-a7dd-4310-8fec-3dcdf8007efd","name":"w15chill","summary":"ひんやり","image":"https://platform-api.bocco.me/ext/assets/stamps/image/8d31a428-df59-4b3f-a23f-21d902d689e9.png"},{"uuid":"ec952d70-c23c-4088-90ba-a579a71666d5","name":"w16hamigaki","summary":"歯磨き","image":"https://platform-api.bocco.me/ext/assets/stamps/image/a4820b04-fb79-4f61-a29f-e354ecaaf1be.png"},{"uuid":"05dd3517-1d35-4878-8181-9128b2b13eaf","name":"w17homework","summary":"勉強","image":"https://platform-api.bocco.me/ext/assets/stamps/image/b74d5648-3e61-4fce-aaf0-7f82dcad47c8.png"},{"uuid":"93453d08-fe89-498f-8aa6-139866c4ffbc","name":"w18bedtime","summary":"寝る時間","image":"https://platform-api.bocco.me/ext/assets/stamps/image/564808a0-e908-4894-b032-58bbc2395c7e.png"},{"uuid":"e292445f-bd14-4f5a-8197-2b815beb18fc","name":"w19dinner","summary":"ご飯の時間","image":"https://platform-api.bocco.me/ext/assets/stamps/image/4ad1e7fb-2a9a-4067-b01f-8a3cb4a65170.png"},{"uuid":"b1eb2714-9fd1-41a3-a720-407b484b1265","name":"w20sleepy","summary":"眠気","image":"https://platform-api.bocco.me/ext/assets/stamps/image/21dcccb4-9ec6-4efb-a8b3-a112df0afa6a.png"}]}
+
+//スタンプの送信
+curl -X POST "https://platform-api.bocco.me/v1/rooms/91f1054d-5b1c-49cb-86e9-01c6be78dc1a/messages/stamp" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"uuid": "6188eaef-0505-4e60-b29a-2a1e7307f556"}'
+//出力
+{"sequence":20260415061010852,"unique_id":"b66dc807-f8dd-4a00-8331-80ffce083c6a","user":{"uuid":"cddf4d1b-d66c-48de-a8c4-789172f8ebba","user_type":"member","nickname":"ゆうま","profile_image":""},"message":{"ja":""},"media":"stamp","audio_url":"https://platform-api.bocco.me/ext/assets/stamps/audio/a4c02976-68e4-4b0b-9977-1ef90f37d78f","image_url":"https://platform-api.bocco.me/ext/assets/stamps/image/dcae4539-6796-43d5-9dd3-02b16d3711e3.png","lang":"ja"}
+
+//Webhookの登録
+curl -X POST 'https://platform-api.bocco.me/v1/webhook' \
+  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d @- <<EOS
+  {  
+    "description": "my webhook",  
+    "url": "https://webhook.site/50d2ed88-42d4-449d-b7d6-f9471786c27f"
+  }
+EOS
+//出力
+{
+  "description":"my webhook",
+  "events":[],
+  "status":"active","secret":"o%4!:jD|?VGKi4zZJxW-!n9aE79WULlo!z&OO3^k)cXg}QvLTx>e,5feHN31ZWLY",
+  "url":"https://webhook.site/50d2ed88-42d4-449d-b7d6-f9471786c27f"
+}
+
+//Webhookで受信するイベントの設定(近接イベント)
+curl -X 'PUT' \
+  'https://platform-api.bocco.me/v1/webhook/events'\
+  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d @- <<EOS
+  {
+    "events": [
+      "radar.detected"
+    ]
+  }
+EOS
+//出力
+{
+  "description":"my webhook",
+  "events":["radar.detected"],
+  "status":"active","secret":"o%4!:jD|?VGKi4zZJxW-!n9aE79WULlo!z&OO3^k)cXg}QvLTx>e,5feHN31ZWLY",
+  "url":"https://webhook.site/50d2ed88-42d4-449d-b7d6-f9471786c27f"
+}
