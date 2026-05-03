@@ -57,11 +57,12 @@ def on_illuminance_changed(data):
     # 例: print(data) と書くと、何ルクスになったか詳細が見られます
 
 # ③ 【別売り】人感センサー（レーダー）が反応した時
-# ※ 公式仕様上、BOCCOの人感センサーは 'radar.changed' というイベントで通知されます
-#@client.event('radar.changed')
-#def on_radar_changed(data):
-#    print("\n🚶 人感センサーが反応しました！（誰かが前を通りました）")
+# ※ 公式仕様上、BOCCOの人感センサーは 'human_sensor.detected' というイベントで通知されます
+@client.event('human_sensor.detected')
+def on_human_detected(data):
+    print("\n🚶 人感センサーが反応しました！（誰かが前を通りました）")
     # 【発展】ここで「おかえり！」と喋らせる処理などを書くことができます
+    print("💡 センサーの生データ:", data)
 
 # =========================================================
 
