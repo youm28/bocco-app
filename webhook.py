@@ -15,6 +15,13 @@ if not webhook_url:
 # クライアントの初期化（自動で.envからトークンを読み込みます）
 client = Client()
 
+# room_clientを作るために、部屋のIDを取得しておきます（後でBOCCOに喋らせるため）
+try:
+    room_id_list = client.get_rooms_id()
+    room_client = client.create_room_client(room_id_list[1]) 
+except Exception as e:
+    print(f"部屋の取得に失敗しました: {e}")
+
 # --- 2. Webhookの設定 ---
 print(f"BOCCOサーバーにWebhook URLを登録しています... ({webhook_url})")
 client.create_webhook_setting(WebHook(webhook_url))
@@ -62,7 +69,13 @@ def on_illuminance_changed(data):
 def on_human_detected(data):
     print("\n🚶 人感センサーが反応しました！（誰かが前を通りました）")
     # 【発展】ここで「おかえり！」と喋らせる処理などを書くことができます
-    print("💡 センサーの生データ:", data)
+    # センサーの名前を取り出してみる（例：「人感センサ」）
+    sensor_name = data.data.human_sensor.user.nickname
+    print(f"反応したセンサー: {sensor_name}")
+    
+    # ★ BOCCO emoに実際に喋らせる！
+    print("BOCCOに「おかえり！」と喋らせます...")
+    room_client.send_msg("誰か来たね！おかえりなさい！")
 
 # =========================================================
 
